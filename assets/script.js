@@ -1,6 +1,8 @@
 let searchBtn = $('#search-button');
 let LocationList = $('.list-group');
 let currentWeather = $('#today');
+var today = dayjs();
+$("#currentDay").text(today.format("dddd, MMMM Do"));
 
 const locations = [];
 searchBtn.on('click',  addlocation);
@@ -13,17 +15,18 @@ function addlocation(){
   console.log(locations);
   console.log(locationAdd)
   renderLocationlist();
-  inputElement.val('')
+  inputElement.val('');
+  
   return false;
 }
 
 //loop throughthe array and display each location 
 
-console.log(locationAdd);
+
 function renderLocationlist(){
 
-  var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+ locationAdd + "&appid=9740464f964306bad708a660e0c862fe";
-  // var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=london&appid=9740464f964306bad708a660e0c862fe";
+  // var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+ locationAdd + "&appid=9740464f964306bad708a660e0c862fe";
+  var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=london&appid=9740464f964306bad708a660e0c862fe";
 
   // Creates a Fetch call for the specific movie button being clicked
   fetch(queryURL)
@@ -48,20 +51,20 @@ function renderLocationlist(){
 
 
       let slectedCity = $('<h1>');
-      slectedCity.text(locationAdd);
+      slectedCity.text(`${locationAdd} ${today.format("DD/MM/YYYY")}`);
       currentWeather.append(slectedCity);
 
       let temperature = $('<p>');
       temperature.text(`temperature: ${data.main.temp}`);
       currentWeather.append(temperature);
 
-      // let temperature = $('<p>');
-      // temperature.text(`temperature: ${data.main.temp}`);
-      // currentWeather.append(temperature);
+      let wind = $('<p>');
+      wind.text(`Wind: ${data.wind.speed}`);
+      currentWeather.append(wind);
 
-      // let temperature = $('<p>');
-      // temperature.text(`temperature: ${data.main.temp}`);
-      // currentWeather.append(temperature);
+      let humidity = $('<p>');
+      humidity.text(`humidity: ${data.main.humidity}`);
+      currentWeather.append(humidity);
 
 
       
