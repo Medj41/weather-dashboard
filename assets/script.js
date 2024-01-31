@@ -65,6 +65,7 @@ LocationList.empty();
       currentWeather.append(slectedCity);
 
       let temperature = $('<p>');
+      data.main.temp = Math.floor(data.main.temp - 273.15);
       temperature.text(`temperature: ${data.main.temp}`);
       currentWeather.append(temperature);
 
@@ -94,11 +95,34 @@ function forecast(){
     return response.json();
   })
   .then(function (data) {
+console.log(data);
+for (let i = 0; i < data.list.length; i++) {
+  
+  console.log(data)
+  if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+    
 
-    for (let i = 0; i < 5; i++) {
-      let eachVard = $('#card')
-      
-    }
+    data.list[i].main.temp = Math.floor(data.list[i].main.temp - 273.15);
+      // temperature.text(`temperature: ${data.main.temp}`);
+       
+      // let cardBody = $('.card-group')
+      let temperature = $('<p>');
+      temperature.addClass('card');
+      temperature.text(` temperature: ${data.list[i].main.temp}`)
+      forecastDays.append(temperature);
+      console.log(temperature);
+
+      let wind = $('<p>');
+      wind.addClass('card');
+      wind.text(` Wind Speed: ${data.list[i].wind.speed}`)
+      forecastDays.append(wind);
+      console.log(wind);
+
+
+
+  }
+  
+}
   });
 
 }
