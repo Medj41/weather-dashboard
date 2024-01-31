@@ -1,7 +1,9 @@
-let locationAdd;
+let InputLocation;
+let slectedCity;
 let searchBtn = $('#search-button');
 let LocationList = $('.list-group');
 let currentWeather = $('#today');
+let forecastDays=$('#forecast')
 
 var today = dayjs();
 $("#currentDay").text(today.format("dddd, MMMM Do"));
@@ -13,11 +15,12 @@ searchBtn.on('click',  addlocation);
  // Add location to Locations array
 function addlocation(event){
   let inputElement = $('#search-input');
-  locationAdd = inputElement.val();
-  locations.push(locationAdd);
+  InputLocation = inputElement.val();
+  locations.push(InputLocation);
   console.log(locations);
-  console.log(locationAdd)
+  console.log(InputLocation)
   renderLocationlist();
+  forecast();
   inputElement.val('');
   
   event.preventDefault();
@@ -29,9 +32,9 @@ function addlocation(event){
 
 function renderLocationlist(){
 
-  var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+ locationAdd + "&appid=9740464f964306bad708a660e0c862fe";
-
-  console.log(locationAdd);
+  var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+ InputLocation + "&appid=9740464f964306bad708a660e0c862fe";
+ 
+  console.log(InputLocation);
   
 currentWeather.empty();
 LocationList.empty();
@@ -41,24 +44,24 @@ LocationList.empty();
       return response.json();
     })
     .then(function (data) {
-      console.log(data)
+      
       LocationList.innerHTML='';
       for (let i = 0; i < locations.length; i++) {
-        locationAdd = locations[i]
-        console.log(locationAdd)
+        InputLocation = locations[i]
+        console.log(InputLocation)
         
         let locationelemet = $('<button>');
          locationelemet.attr("data-name");
-         locationelemet.text(locationAdd);
+         locationelemet.text(InputLocation);
          LocationList.append(locationelemet);
        console.log(locationelemet);  
        }
 
 
-
-
-      let slectedCity = $('<h1>');
-      slectedCity.text(`${locationAdd} ${today.format("DD/MM/YYYY")}`);
+       
+       currentWeather.addClass('border border-dark');
+      slectedCity = $('<h1>');
+      slectedCity.text(`${InputLocation} ${today.format("DD/MM/YYYY")}`);
       currentWeather.append(slectedCity);
 
       let temperature = $('<p>');
@@ -80,10 +83,26 @@ LocationList.empty();
 
 };
 
+function forecast(){
+  // var queryURL2 = "api.openweathermap.org/data/2.5/forecast?q="+ "paris" + "&appid=9740464f964306bad708a660e0c862fe";
+  console.log(InputLocation)
+
+  var queryURL2 = "https://api.openweathermap.org/data/2.5/forecast?q="+ InputLocation + "&appid=9740464f964306bad708a660e0c862fe";
+  forecastDays.empty();
+  fetch(queryURL2)
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+
+    for (let i = 0; i < 5; i++) {
+      let eachVard = $('#card')
+      
+    }
+  });
+
+}
 
 
 
-
-
-  
 
