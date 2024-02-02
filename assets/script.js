@@ -4,29 +4,33 @@ let searchBtn = $("#search-button");
 let LocationList = $(".list-group");
 let currentWeather = $("#today");
 let forecastDays = $("#forecast");
+let locationButton = $("<button>");
+let value = InputLocation
+
+
 
 var today = dayjs();
 $("#currentDay").text(today.format("dddd, MMMM Do"));
 
-const locations = [];
+const locations = JSON.parse(localStorage.getItem("locations")) || [];
 
-searchBtn.on("click", addlocation);
-
-// Add location to Locations array
-function addlocation(event) {
+searchBtn.on("click", function addlocation(event) {
   let inputElement = $("#search-input");
   InputLocation = inputElement.val();
-  locations.push(InputLocation);
-  console.log(locations);
-  console.log(InputLocation);
+
+  if (InputLocation) {
+    if (!locations.includes(InputLocation)) {
+      locations.push(InputLocation);
+    }
+  }
+
+  // console.log(locations);
+  // console.log(InputLocation);
   renderLocationlist();
   forecast();
   inputElement.val("");
-
   event.preventDefault();
-}
-
-//loop throughthe array and display each location
+});
 
 function renderLocationlist() {
   var queryURL =
@@ -34,7 +38,7 @@ function renderLocationlist() {
     InputLocation +
     "&appid=9740464f964306bad708a660e0c862fe";
 
-  console.log(InputLocation);
+  // console.log(InputLocation);
 
   currentWeather.empty();
   LocationList.empty();
@@ -44,25 +48,33 @@ function renderLocationlist() {
       return response.json();
     })
     .then(function (data) {
+      // console.log(data);
       LocationList.innerHTML = "";
       for (let i = 0; i < locations.length; i++) {
         InputLocation = locations[i];
-        console.log(InputLocation);
+        // console.log(InputLocation);
 
-        let locationelemet = $("<button>");
-        locationelemet.attr("data-name");
-        locationelemet.text(InputLocation);
-        LocationList.append(locationelemet);
-        console.log(locationelemet);
+        locationButton = $("<button>");
+        locationButton.attr("data-name value");
+        locationButton.addClass("mb-1");
+        locationButton.text(InputLocation);
+        LocationList.append(locationButton);
+        localStorage.setItem("locations", JSON.stringify(locations));
+
+        // console.log(locationButton);
       }
 
       currentWeather.addClass("border border-dark");
       slectedCity = $("<h1>");
-      let img = $('<img>');
-      // img.attr("src", " https://openweathermap.org/img/wn/" + data.list.weather[0].icon + ".png" );
+      let iconOne = $("<img>");
+      iconOne.attr(
+        "src",
+        " https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png"
+      );
+      // console.log(iconOne);
 
-      slectedCity.text(`${InputLocation} ${today.format("DD/MM/YYYY")} ${img}`)
-      currentWeather.append(slectedCity, img);
+      slectedCity.text(`${InputLocation} ${today.format("DD/MM/YYYY")}`);
+      currentWeather.append(slectedCity, iconOne);
 
       let temperature = $("<p>");
       data.main.temp = Math.floor(data.main.temp - 273.15);
@@ -80,7 +92,7 @@ function renderLocationlist() {
 }
 
 function forecast() {
-  console.log(InputLocation);
+  // console.log(InputLocation);
 
   var queryURL2 =
     "https://api.openweathermap.org/data/2.5/forecast?q=" +
@@ -92,9 +104,9 @@ function forecast() {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      // console.log(data);
       for (let i = 0; i < data.list.length; i++) {
-        console.log(data);
+        // console.log(data);
         if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
           data.list[i].main.temp = Math.floor(data.list[i].main.temp - 273.15);
           // temperature.text(`temperature: ${data.main.temp}`);
@@ -114,7 +126,13 @@ function forecast() {
 
           let icon = $("<img>");
           icon.addClass("card-text");
-          icon.attr("src", " https://openweathermap.org/img/wn/" + data.list[i].weather[0].icon + ".png" );
+          icon.attr(
+            "src",
+            " https://openweathermap.org/img/wn/" +
+              data.list[i].weather[0].icon +
+              ".png"
+          );
+          // console.log(icon)
           // icon.text(`${data.list[i].weather[0].icon}`);
 
           let temperature = $("<p>");
@@ -137,9 +155,15 @@ function forecast() {
     });
 }
 
-// <div class="col-sm-3 mb-3 mb-sm-0">
-//               <div class="card">
-//                 <div class="card-body">
-//                   <p class="card-text">With supporting text below</p>
-//               </div>
-//             </div>
+// localStorage.setItem('locations',JSON.stringify(locations));
+
+// const storedCities = JSON.parse(localStorage.getItem('locations'));
+// console.log(storedCities);
+let i = 0;
+LocationList.on('click', function saveInput(event) {
+  
+  let value = $(this).children('locationButton').text(this);
+i++
+  console.log(value);
+});
+
