@@ -5,11 +5,13 @@ let LocationList = $(".list-group");
 let currentWeather = $("#today");
 let forecastDays = $("#forecast");
 let locationButton = $("<button>");
-let value = InputLocation;
+// let value = InputLocation;
 
 var today = dayjs();
 $("#currentDay").text(today.format("dddd, MMMM Do"));
 const locations = JSON.parse(localStorage.getItem("locations")) || [];
+
+
 
 // search button 
 
@@ -17,59 +19,48 @@ searchBtn.on("click", function addlocation(event) {
   let inputElement = $("#search-input");
   InputLocation = inputElement.val();
 
-  if (InputLocation) {
-    if (!locations.includes(InputLocation)) {
-      locations.push(InputLocation);
-    }
-  }
-
-  if (inputElement === "") {
+if (InputLocation) {
+  if (!locations.includes(InputLocation)) {
+    locations.push(InputLocation);
+  }else if (inputElement === "") {
     return;
   }
+}
+    
+  
 
-  // console.log(locations);
-  // console.log(InputLocation);
-  renderLocationlist();
-  forecast();
-  storedCities();
+  
+
+  
+  DisplayCurrentWeather(InputLocation);
+  forecast(InputLocation);
+  storedCities(InputLocation);
   inputElement.val("");
   event.preventDefault();
 });
 
 
-// reberLOcation list function
+// DisplayCurrentWeather list function
 
-function renderLocationlist() {
+function DisplayCurrentWeather(InputLocation) {
+  
+  
 
   var queryURL =
     "https://api.openweathermap.org/data/2.5/weather?q=" +
     InputLocation +
     "&appid=9740464f964306bad708a660e0c862fe";
 
-  // console.log(InputLocation);
 
   currentWeather.empty();
   LocationList.empty();
+
   // Creates a Fetch call for the specific movie button being clicked
   fetch(queryURL)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      // console.log(data);
-      // LocationList.innerHTML = "";
-      // for (let i = 0; i < locations.length; i++) {
-      //   InputLocation = locations[i];
-      //   // console.log(InputLocation);
-
-      //   locationButton = $("<button>");
-      //   locationButton.attr("data-name value");
-      //   locationButton.addClass("mb-1");
-      //   locationButton.text(InputLocation);
-      //   LocationList.append(locationButton);
-      //   localStorage.setItem("locations", JSON.stringify(locations));
-
-      //   // console.log(locationButton);
 
       currentWeather.addClass("border border-dark");
       slectedCity = $("<h1>");
@@ -78,7 +69,6 @@ function renderLocationlist() {
         "src",
         " https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png"
       );
-      // console.log(iconOne);
 
       slectedCity.text(`${InputLocation} ${today.format("DD/MM/YYYY")}`);
       currentWeather.append(slectedCity, iconOne);
@@ -96,13 +86,16 @@ function renderLocationlist() {
       humidity.text(`humidity: ${data.main.humidity}`);
       currentWeather.append(humidity);
     });
+
+    
+    
    
 }
 
 function forecast() {
-  // console.log(InputLocation);
 
   var queryURL2 =
+
     "https://api.openweathermap.org/data/2.5/forecast?q=" +
     InputLocation +
     "&appid=9740464f964306bad708a660e0c862fe";
@@ -112,14 +105,11 @@ function forecast() {
       return response.json();
     })
     .then(function (data) {
-      // console.log(data);
+
       for (let i = 0; i < data.list.length; i++) {
-        // console.log(data);
         if (data.list[i].dt_txt.indexOf("12:00:00") !== -1) {
           data.list[i].main.temp = Math.floor(data.list[i].main.temp - 273.15);
-          // temperature.text(`temperature: ${data.main.temp}`);
 
-          // let cardBody = $('.card-group')
 
           let col = $("<div>");
           col.addClass("col-lg mb-3 mb-sm-0");
@@ -140,8 +130,6 @@ function forecast() {
               data.list[i].weather[0].icon +
               ".png"
           );
-          // console.log(icon)
-          // icon.text(`${data.list[i].weather[0].icon}`);
 
           let temperature = $("<p>");
           temperature.addClass("card-text");
@@ -163,21 +151,18 @@ function forecast() {
     });
 }
 
-// localStorage.setItem('locations',JSON.stringify(locations));
 
-// const storedCities = JSON.parse(localStorage.getItem('locations'));
-// console.log(storedCities);
-LocationList.on("click", function saveInput(event) {
+LocationList.on("click", function displayButton(event) {
   let value = event.target.textContent;
   InputLocation = value;
-  renderLocationlist(value);
-  forecast(value);
-  event.preventDefault();
-
+  DisplayCurrentWeather(InputLocation);
+  forecast(InputLocation);
+  storedCities(InputLocation);
   console.log(value);
 });
 
 
+// 
 function storedCities() {
   LocationList.innerHTML = "";
   for (let i = 0; i < locations.length; i++) {
@@ -190,6 +175,4 @@ function storedCities() {
     LocationList.append(locationButton);
     localStorage.setItem("locations", JSON.stringify(locations));
   }
-  forecast();
-
 }
