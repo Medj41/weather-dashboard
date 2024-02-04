@@ -5,14 +5,13 @@ let LocationList = $(".list-group");
 let currentWeather = $("#today");
 let forecastDays = $("#forecast");
 let locationButton = $("<button>");
-let value = InputLocation
-
-
+let value = InputLocation;
 
 var today = dayjs();
 $("#currentDay").text(today.format("dddd, MMMM Do"));
-
 const locations = JSON.parse(localStorage.getItem("locations")) || [];
+
+// search button 
 
 searchBtn.on("click", function addlocation(event) {
   let inputElement = $("#search-input");
@@ -24,15 +23,24 @@ searchBtn.on("click", function addlocation(event) {
     }
   }
 
+  if (inputElement === "") {
+    return;
+  }
+
   // console.log(locations);
   // console.log(InputLocation);
   renderLocationlist();
   forecast();
+  storedCities();
   inputElement.val("");
   event.preventDefault();
 });
 
+
+// reberLOcation list function
+
 function renderLocationlist() {
+
   var queryURL =
     "https://api.openweathermap.org/data/2.5/weather?q=" +
     InputLocation +
@@ -49,20 +57,19 @@ function renderLocationlist() {
     })
     .then(function (data) {
       // console.log(data);
-      LocationList.innerHTML = "";
-      for (let i = 0; i < locations.length; i++) {
-        InputLocation = locations[i];
-        // console.log(InputLocation);
+      // LocationList.innerHTML = "";
+      // for (let i = 0; i < locations.length; i++) {
+      //   InputLocation = locations[i];
+      //   // console.log(InputLocation);
 
-        locationButton = $("<button>");
-        locationButton.attr("data-name value");
-        locationButton.addClass("mb-1");
-        locationButton.text(InputLocation);
-        LocationList.append(locationButton);
-        localStorage.setItem("locations", JSON.stringify(locations));
+      //   locationButton = $("<button>");
+      //   locationButton.attr("data-name value");
+      //   locationButton.addClass("mb-1");
+      //   locationButton.text(InputLocation);
+      //   LocationList.append(locationButton);
+      //   localStorage.setItem("locations", JSON.stringify(locations));
 
-        // console.log(locationButton);
-      }
+      //   // console.log(locationButton);
 
       currentWeather.addClass("border border-dark");
       slectedCity = $("<h1>");
@@ -89,6 +96,7 @@ function renderLocationlist() {
       humidity.text(`humidity: ${data.main.humidity}`);
       currentWeather.append(humidity);
     });
+   
 }
 
 function forecast() {
@@ -107,7 +115,7 @@ function forecast() {
       // console.log(data);
       for (let i = 0; i < data.list.length; i++) {
         // console.log(data);
-        if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+        if (data.list[i].dt_txt.indexOf("12:00:00") !== -1) {
           data.list[i].main.temp = Math.floor(data.list[i].main.temp - 273.15);
           // temperature.text(`temperature: ${data.main.temp}`);
 
@@ -159,11 +167,29 @@ function forecast() {
 
 // const storedCities = JSON.parse(localStorage.getItem('locations'));
 // console.log(storedCities);
-let i = 0;
-LocationList.on('click', function saveInput(event) {
-  
-  let value = $(this).children('locationButton').text(this);
-i++
+LocationList.on("click", function saveInput(event) {
+  let value = event.target.textContent;
+  InputLocation = value;
+  renderLocationlist(value);
+  forecast(value);
+  event.preventDefault();
+
   console.log(value);
 });
 
+
+function storedCities() {
+  LocationList.innerHTML = "";
+  for (let i = 0; i < locations.length; i++) {
+    InputLocation = locations[i];
+
+    locationButton = $("<button>");
+    locationButton.attr("data-name value");
+    locationButton.addClass("mb-1");
+    locationButton.text(InputLocation);
+    LocationList.append(locationButton);
+    localStorage.setItem("locations", JSON.stringify(locations));
+  }
+  forecast();
+
+}
