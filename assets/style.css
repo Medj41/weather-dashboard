@@ -1,3 +1,7 @@
+body{
+  background-color: #1b263b;
+  color: white;
+}
 
 .input-group {
   position: relative;
@@ -17,3 +21,19 @@
   color: red;
 }
 
+.weather-header{
+  background-color: #0d1b2a;
+}
+
+.border{
+  color: aliceblue;
+  border-radius: 50px;
+  box-shadow: 5px 10px 8px 10px #001524;
+}
+
+button{
+  border-radius: 50px;
+  display: flex;
+  justify-content: center
+
+};

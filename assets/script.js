@@ -26,15 +26,10 @@ if (InputLocation) {
     return;
   }
 }
-    
-  
-
-  
-
   
   DisplayCurrentWeather(InputLocation);
   forecast(InputLocation);
-  storedCities(InputLocation);
+  storedCities();
   inputElement.val("");
   event.preventDefault();
 });
@@ -62,7 +57,7 @@ function DisplayCurrentWeather(InputLocation) {
     })
     .then(function (data) {
 
-      currentWeather.addClass("border border-dark");
+      currentWeather.addClass("border mb-5");
       slectedCity = $("<h1>");
       let iconOne = $("<img>");
       iconOne.attr(
@@ -116,7 +111,7 @@ function forecast() {
           let card = $("<div>");
           card.addClass("card");
           let cardBody = $("<div>");
-          cardBody.addClass("card-body border border-dark");
+          cardBody.addClass("card-body border");
 
           let date = $("<p>");
           date.addClass("card-text");
@@ -162,7 +157,7 @@ LocationList.on("click", function displayButton(event) {
 });
 
 
-// 
+// buttons for searched history
 function storedCities() {
   LocationList.innerHTML = "";
   for (let i = 0; i < locations.length; i++) {
@@ -170,7 +165,9 @@ function storedCities() {
 
     locationButton = $("<button>");
     locationButton.attr("data-name value");
-    locationButton.addClass("mb-1");
+    locationButton.addClass(" mb-1");
+    LocationList.addClass(" mt-5");
+
     locationButton.text(InputLocation);
     LocationList.append(locationButton);
     localStorage.setItem("locations", JSON.stringify(locations));
